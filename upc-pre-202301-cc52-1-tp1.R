@@ -13,5 +13,6 @@ library(DescTools)
 #--cargando datos
 
 setwd("C:/Users/USUARIO/Desktop/DataScience-Grupo-1-Hotel-booking-demand")
-df<-read.table('hotel_bookings.csv',header=TRUE,sep=";",dec='.')
+df<-read.table('hotel_bookings.csv',header=TRUE,sep=",",dec='.')
 head(df)
+
