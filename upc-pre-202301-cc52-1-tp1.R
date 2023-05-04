@@ -9,11 +9,13 @@ library(mlr)
 library(agricolae)
 library(ggplot2)
 library(DescTools)
-
+library(lubridate)
 #--cargando datos
 
 setwd("C:/Users/USUARIO/Desktop/DataScience-Grupo-1-Hotel-booking-demand")
-df<-read.csv('hotel_bookings.csv',header=TRUE,sep=",")
+hbd<-read.csv('hotel_bookings.csv',header=TRUE,sep=",")
+View(df)
+
 head(df)
 
 
@@ -48,8 +50,7 @@ df$customer_type=as.factor(df$customer_type)
 df$adr=is.numeric(df$adr)
 df$required_car_parking_spaces=as.factor(df$required_car_parking_spaces)
 df$total_of_special_requests=as.factor(df$total_of_special_requests)
-df$reservation_status=as.factor(df$reservation_status)
-df$reservation_status_date=as.Date(df$reservation_status_date, format="%y-%m-%d")
+df$reservation_status_date=as.Date(df$reservation_status_date)
 
 View(df)
 s<-table(df$market_segment)
@@ -60,23 +61,46 @@ summary(df)
 names(df)
 str(df)
 
-sin_valor <- function(x){
-  sum = 0
-  for(i in 1:ncol(x))
-  {
-    cat("En la columna",colnames(x[i]),"total de valores NA:",colSums(is.na(x[i])),"\n")
-  }
-}
+#Eliminando columnas redundantes
 
-sin_valor(df)
+df$arrival_date_year<-NULL
+df$arrival_date_month<-NULL
+df$arrival_date_day_of_month<-NULL
 
-en_blanco <- function(x){
-  sum = 0
-  for(i in 1:ncol(x))
-  {
-    cat("En la columna",colnames(x[i]),"total de valores en blanco:",colSums(x[i]==""),"\n")
-  }
-}
-en_blanco(df)
+df_original<-df
+
+summary(df)
+s<-table(df$country)
+View(df$country)
+
+df_resort<-df[df$hotel=="Resort Hotel",]
+df_resort$hotel<-NULL
+View(df_resort)
+summary(df_resort)
+
+df_city<-df[df$hotel=="City Hotel",]
+df_city$hotel<-NULL
+View(df_city)
+summary(df_city)
 
 
+frecuenciasR<-table(df_resort$is_canceled)
+frecuenciasC<-table(df_city$is_canceled)
+
+
+barplot(frecuencias,main="Cancelacion en el Hotel Resort",names=c("No cancelado","Cancelado"))
+
+
+porcentajes<-round(frecuencias/sum(frecuencias)*100,1)
+
+
+barplot(frecuenciasC,main="Cancelacion en el City Hotel",names=c("No cancelado","Cancelado"),col=c("lightblue","mistyrose"))
+frecuenciasC
+porcentajes<-round(frecuenciasC/sum(frecuenciasC)*100,1)
+porcentajes
+
+
+#Meses de mayor afluencia por hotel en grafico de lineas
+df<-df[df$is_canceled==FALSE,]
+count<-table(df$hotel,month(df&reservation_status_date))
+count
