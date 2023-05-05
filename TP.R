@@ -187,4 +187,29 @@ ggplot(hbd_top_15,aes(country_name,Freq,fill=hotel))+
     labs(x="Paises",y="Frecuencia",title="Diagrama del top 15 de las frecuencias de Paises por hotel")
 
 
+#Moda del las habitaciones reservadas del Resort Hotel y City Hotel
 
+hbd_check_out <- hbd[hbd$reservation_status=="Check-Out",]
+hbd_check_out$reservation_status<-NULL
+
+hbd_check_out[hbd_check_out$hotel=="Resort Hotel","reserved_room_type"]
+mlv(hbd_check_out[hbd_check_out$hotel=="Resort Hotel","reserved_room_type"])
+
+
+hbd_check_out[hbd_check_out$hotel=="City Hotel","reserved_room_type"]
+mlv(hbd_check_out[hbd_check_out$hotel=="City Hotel","reserved_room_type"])
+
+
+#Media-Mediana-Moda del ADR de las reservas no canceladas
+
+data <- hbd[hbd$reservation_status != "Canceled", 'adr']
+q <- quantile(data)
+iqr <- IQR(data)
+max <- q['75%'] + 1.5 * iqr
+min <- q['25%'] - 1.5 * iqr
+
+with(hbd, hbd[adr >= min & adr <= max, 'adr'])
+
+mean(with(hbd, hbd[adr >= min & adr <= max, 'adr']))
+median(with(hbd, hbd[adr >= min & adr <= max, 'adr']))
+mlv(with(hbd, hbd[adr >= min & adr <= max, 'adr']))
